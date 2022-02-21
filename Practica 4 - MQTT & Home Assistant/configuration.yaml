@@ -1,0 +1,44 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+defualt_config:
+
+# Text to speech
+tts:
+ - platform: google_translate
+
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+sensor:
+  - platform mqtt
+  name: "sensorHum"
+  static_topic: "iteso/sensor/hum"
+
+  - platform mqtt
+  name: "sensorTemp"
+  static_topic: "iteso/sensor/temp"
+  unit_of_measurement: "C"
+
+  - platform mqtt
+  name: "sensorTerm"
+  static_topic: "iteso/sensor/term"
+
+  - platform mqtt
+  name: "sensorUltra"
+  static_topic: "iteso/sensor/ultra"
+
+switch:
+  - platform: mqtt
+  name: "Led"
+  command_topic: "iteso/switch/led"
+  payload_on: "Led ON"
+  payload_off: "Led OFF"
+
+  - platform: mqtt
+  name: "ModuloRelevador"
+  command_topic: "iteso/switch/relevador"
+  payload_on: "MR ON"
+  payload_off: "MR OFF"
