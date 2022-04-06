@@ -1,4 +1,5 @@
 import 'package:dogtrainer_420_turbo/home/navigation.dart';
+import 'package:dogtrainer_420_turbo/login/login.dart';
 import 'package:dogtrainer_420_turbo/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DogTrainer 420 Turbo',
       theme: theme,
-      home: const Navigation(),
+      home: const Login(),
     );
   }
 }

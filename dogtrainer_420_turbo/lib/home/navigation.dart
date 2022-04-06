@@ -1,5 +1,5 @@
-import 'package:dogtrainer_420_turbo/camera/camera.dart';
 import 'package:dogtrainer_420_turbo/home/home_page.dart';
+import 'package:dogtrainer_420_turbo/info/info.dart';
 import 'package:flutter/material.dart';
 
 class Navigation extends StatefulWidget {
@@ -13,7 +13,7 @@ class _NavigationState extends State<Navigation> {
   int _currentPageIndex = 0;
   final _pagesList = [
     const HomePage(),
-    const Camera(),
+    const Info(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -63,8 +63,8 @@ class _NavigationState extends State<Navigation> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.camera_alt),
-            label: 'Camera',
+            icon: Icon(Icons.info),
+            label: 'Information',
           ),
         ],
       ),
