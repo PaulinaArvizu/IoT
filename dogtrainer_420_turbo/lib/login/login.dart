@@ -1,8 +1,9 @@
-import 'package:dogtrainer_420_turbo/home/navigation.dart';
 import 'package:flutter/material.dart';
 
+import '../home/navigation.dart';
+
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  Login({Key key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -17,7 +18,7 @@ class _LoginState extends State<Login> {
       body: Stack(
         children: <Widget>[
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/background.png"),
                 fit: BoxFit.cover,
@@ -29,7 +30,7 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             // mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 "DogTrainer 420 Turbo",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -46,7 +47,7 @@ class _LoginState extends State<Login> {
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
-                      side: const BorderSide(color: Color(0xffE2E2E2)),
+                      side: BorderSide(color: Color(0xffE2E2E2)),
                     ),
                     primary: Colors.white,
                     onPrimary: Colors.black,
@@ -54,7 +55,7 @@ class _LoginState extends State<Login> {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => const Navigation(),
+                        builder: (context) => Navigation(),
                       ),
                     );
                   },
@@ -65,8 +66,8 @@ class _LoginState extends State<Login> {
                         "https://rotulosmatesanz.com/wp-content/uploads/2017/09/2000px-Google_G_Logo.svg_.png",
                         height: 16,
                       ),
-                      const SizedBox(width: 10),
-                      const Text(
+                      SizedBox(width: 10),
+                      Text(
                         "Login with Google",
                         style: TextStyle(
                           fontFamily: 'Poppins',

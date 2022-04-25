@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:dogtrainer_420_turbo/mqtt/state/MQTTAppState.dart';
+import 'package:dogtrainer_420_turbo/mqtt/MQTTManager.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -11,8 +14,16 @@ class _HomePageState extends State<HomePage> {
   TextEditingController _nameController = TextEditingController();
   bool _isButtonActive = false;
 
+  MQTTAppState currentAppState;
+  MQTTManager manager;
+
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<MQTTAppState>(context);
+    // Keep a reference to the app state.
+    currentAppState = appState;
+    MQTTAppConnectionState state = currentAppState.getAppConnectionState;
+
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     List<String> trickList = ["Sit", "Lay down", "Stay"];
@@ -23,6 +34,8 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Text(_prepareStateMessageFrom(
+                  currentAppState.getAppConnectionState)),
               SizedBox(
                 height: height * 0.10,
                 child: Center(
@@ -55,17 +68,17 @@ class _HomePageState extends State<HomePage> {
         children: [
           FloatingActionButton(
             heroTag: "fab1",
-            onPressed: () => {},
-            child: const Icon(Icons.favorite), //Icon(Icons.cookie),
+            onPressed: state == MQTTAppConnectionState.connected
+                ? () =>
+                    _publishMessage("Message from DogTrainer 420 Turbo app <3")
+                : null, //
+            child: Icon(Icons.favorite),
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
             heroTag: "fab2",
-            // backgroundColor: const Color(0xff4D8D6E),
             onPressed: () => _openNewCommandDialog(),
-            child: const Icon(
-              Icons.add,
-            ),
+            child: Icon(Icons.add),
           ),
         ],
       ),
@@ -104,6 +117,7 @@ class _HomePageState extends State<HomePage> {
           return AlertDialog(
             title: const Text('New Command'),
             content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
@@ -119,6 +133,14 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                IconButton(
+                  tooltip: "Record",
+                  onPressed: () {},
+                  icon: const Icon(Icons.mic),
+                ),
               ],
             ),
             actions: <Widget>[
@@ -130,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                   });
                 },
               ),
-              ElevatedButton(
+              TextButton(
                 child: const Text('OK'),
                 onPressed: () {
                   setState(() {
@@ -169,5 +191,21 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
+  } // Utility functions
+
+  String _prepareStateMessageFrom(MQTTAppConnectionState state) {
+    switch (state) {
+      case MQTTAppConnectionState.connected:
+        return "Connected";
+      case MQTTAppConnectionState.connecting:
+        return "Connecting";
+      case MQTTAppConnectionState.disconnected:
+        return "Disconnected";
+    }
+    return "error";
+  }
+
+  void _publishMessage(String text) {
+    manager.publish(text);
   }
 }
