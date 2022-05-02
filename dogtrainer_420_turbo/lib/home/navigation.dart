@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dogtrainer_420_turbo/home/home_page.dart';
-import 'package:provider/provider.dart';
-import 'package:dogtrainer_420_turbo/mqtt/state/MQTTAppState.dart';
-import 'package:dogtrainer_420_turbo/mqtt/MQTTManager.dart';
-import 'dart:io' show Platform;
 
 import 'info.dart';
 
@@ -21,18 +17,8 @@ class _NavigationState extends State<Navigation> {
     Info(),
   ];
 
-  final String _host = "broker.mqttdashboard.com";
-  final String _topic = "dogtrainer";
-  MQTTAppState currentAppState;
-  MQTTManager manager;
-
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<MQTTAppState>(context);
-    // Keep a reference to the app state.
-    currentAppState = appState;
-    MQTTAppConnectionState state = currentAppState.getAppConnectionState;
-
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
@@ -40,13 +26,12 @@ class _NavigationState extends State<Navigation> {
       appBar: AppBar(
         centerTitle: true,
         toolbarHeight: height * 0.10,
-        // backgroundColor: background,
         elevation: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.network(
-              "https://air-marketing-assets.s3.amazonaws.com/blog/logo-db/dog-icon/dog-icon-png-1.png",
+            Image.asset(
+              "assets/images/dog-icon.png",
               height: width * 0.10,
             ),
             const SizedBox(width: 5),
@@ -55,24 +40,11 @@ class _NavigationState extends State<Navigation> {
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.bold,
-                fontSize: width * 0.06,
+                fontSize: width * 0.07,
               ),
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.power_settings_new,
-              color: Colors.white,
-            ),
-            onPressed: state == MQTTAppConnectionState.disconnected
-                ? _configureAndConnect
-                : state == MQTTAppConnectionState.connected
-                    ? _disconnect
-                    : null, //
-          ),
-        ],
       ),
       body: IndexedStack(
         index: _currentPageIndex,
@@ -95,23 +67,5 @@ class _NavigationState extends State<Navigation> {
         ],
       ),
     );
-  }
-
-  void _configureAndConnect() {
-    String osPrefix = "Flutter_iOS";
-    if (Platform.isAndroid) {
-      osPrefix = "Flutter_Android";
-    }
-    manager = MQTTManager(
-        host: _host,
-        topic: _topic,
-        identifier: osPrefix,
-        state: currentAppState);
-    manager.initializeMQTTClient();
-    manager.connect();
-  }
-
-  void _disconnect() {
-    manager.disconnect();
   }
 }

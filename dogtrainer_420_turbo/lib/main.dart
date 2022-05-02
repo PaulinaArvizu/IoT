@@ -11,16 +11,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    /*
-    final MQTTManager manager = MQTTManager(host:'test.mosquitto.org',topic:'flutter/amp/cool',identifier:'ios');
-    manager.initializeMQTTClient();
-
-     */
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'DogTrainer 420 Turbo',
         theme: theme,
         home: ChangeNotifierProvider<MQTTAppState>(
-          builder: (_) => MQTTAppState(),
+          create: (_) => MQTTAppState(),
           child: Navigation(),
         ));
   }

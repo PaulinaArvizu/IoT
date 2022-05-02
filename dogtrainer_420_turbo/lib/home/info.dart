@@ -1,13 +1,20 @@
+import 'package:dogtrainer_420_turbo/mqtt/state/MQTTAppState.dart';
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
-// import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class Info extends StatelessWidget {
+class Info extends StatefulWidget {
   const Info({Key key}) : super(key: key);
 
   @override
+  _InfoState createState() => _InfoState();
+}
+
+class _InfoState extends State<Info> {
+  @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<MQTTAppState>(context);
     double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -22,12 +29,9 @@ class Info extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            newRow(
-              "Last used:", "today",
-              // DateFormat('yyyy-MMM-dd – kk:mm').format(DateTime.now()),
-            ),
-            const SizedBox(height: 10),
-            newRow("Last trick:", "Sit"),
+            newRow("Last used:", appState.getDate),
+            // const SizedBox(height: 10),
+            // newRow("Last trick:", "Sit"),
           ],
         ),
       ),

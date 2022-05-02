@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dogtrainer_420_turbo/mqtt/state/MQTTAppState.dart';
 import 'package:dogtrainer_420_turbo/mqtt/MQTTManager.dart';
+import 'dart:io' show Platform;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -11,6 +12,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final String _host = "broker.mqttdashboard.com";
+  final String _topic = "dogtrainer";
   TextEditingController _nameController = TextEditingController();
   bool _isButtonActive = false;
 
@@ -36,6 +39,17 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(_prepareStateMessageFrom(
                   currentAppState.getAppConnectionState)),
+              state == MQTTAppConnectionState.disconnected
+                  ? IconButton(
+                      icon: Icon(Icons.power_off),
+                      onPressed: _configureAndConnect,
+                    )
+                  : state == MQTTAppConnectionState.connected
+                      ? IconButton(
+                          icon: Icon(Icons.power),
+                          onPressed: _disconnect,
+                        )
+                      : Text(''),
               SizedBox(
                 height: height * 0.10,
                 child: Center(
@@ -68,15 +82,23 @@ class _HomePageState extends State<HomePage> {
         children: [
           FloatingActionButton(
             heroTag: "fab1",
-            onPressed: state == MQTTAppConnectionState.connected
-                ? () =>
-                    _publishMessage("Message from DogTrainer 420 Turbo app <3")
-                : null, //
-            child: Icon(Icons.favorite),
+            onPressed: () => _publishMessage("turn on"),
+            child: Icon(Icons.camera_alt),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           FloatingActionButton(
             heroTag: "fab2",
+            onPressed: state == MQTTAppConnectionState.connected
+                ? () {
+                    _publishMessage("release treat");
+                    appState.updateDate();
+                  }
+                : null,
+            child: Icon(Icons.favorite),
+          ),
+          SizedBox(height: 8),
+          FloatingActionButton(
+            heroTag: "fab3",
             onPressed: () => _openNewCommandDialog(),
             child: Icon(Icons.add),
           ),
@@ -129,7 +151,6 @@ class _HomePageState extends State<HomePage> {
                   onChanged: (value) {
                     setState(() {
                       _isButtonActive = value.isNotEmpty;
-                      // _isButtonActive = !_isButtonActive;
                     });
                   },
                 ),
@@ -191,7 +212,26 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
-  } // Utility functions
+  }
+
+  // Utility functions
+  void _configureAndConnect() {
+    String osPrefix = "Flutter_iOS";
+    if (Platform.isAndroid) {
+      osPrefix = "Flutter_Android";
+    }
+    manager = MQTTManager(
+        host: _host,
+        topic: _topic,
+        identifier: osPrefix,
+        state: currentAppState);
+    manager.initializeMQTTClient();
+    manager.connect();
+  }
+
+  void _disconnect() {
+    manager.disconnect();
+  }
 
   String _prepareStateMessageFrom(MQTTAppConnectionState state) {
     switch (state) {
